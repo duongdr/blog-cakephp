@@ -8,7 +8,7 @@ class PostsController extends AppController {
 	public function isAuthorized($user) {
 
 		if (isset($user['role']) && $user['role'] != 'user') {
-			// All registered users can add posts
+			// All registered writer can add posts
 			if ($this->action === 'add') {
 				return true;
 			}
@@ -26,21 +26,15 @@ class PostsController extends AppController {
 	}
 
 	public function index() {
-		if ($this->isAuthorized($this->Auth->user())) {
 			$this->paginate = array(
-				'limit' => 3,
+				'limit' => 4,
 				'order' => array('id' => 'asc')
 			);
 			$posts = $this->paginate('Post');
 			$this->set('posts', $posts);
-		} else {
-			$this->Flash->error(__('You can not access.'));
-		}
 	}
 
 	public function view($id = null) {
-		if ($this->isAuthorized($this->Auth->user())) {
-
 			if (!$id) {
 				throw new NotFoundException(__('Invalid post'));
 			}
@@ -50,9 +44,6 @@ class PostsController extends AppController {
 				throw new NotFoundException(__('Invalid post'));
 			}
 			$this->set('post', $post);
-		} else {
-			$this->Flash->error(__('You can not access.'));
-		}
 	}
 
 	public function add() {

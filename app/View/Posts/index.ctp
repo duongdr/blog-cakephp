@@ -28,7 +28,6 @@ $paginator = $this->Paginator;
 	</thead>
 	<tbody>
 	<!-- Here is where we loop through our $posts array, printing out post info -->
-
 	<?php foreach ($posts as $post): ?>
 		<tr>
 			<td><?php echo $post['Post']['id']; ?></td>
