@@ -22,11 +22,14 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
 <head>
 	<?php echo $this->Html->charset(); ?>
 	<title>
-		<?php echo $cakeDescription ?>:
-		<?php echo $this->fetch('title'); ?>
+		BLOG
 	</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+		  integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<?php
-		echo $this->Html->meta('icon');
+//		echo $this->Html->meta('icon');
 
 		echo $this->Html->css('cake.generic');
 
@@ -38,24 +41,24 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
 <body>
 	<div id="container">
 		<div id="header">
-			<h1><?php echo $this->Html->link($cakeDescription, 'https://cakephp.org'); ?></h1>
+<!--			<h1>--><?php //echo $this->Html->link($cakeDescription, 'https://cakephp.org'); ?><!--</h1>-->
+			<div>
+				<?php echo $this->Html->link(
+						'Logout',
+						array('controller' => 'users', 'action' => 'logout')
+				); ?>
+			</div>
+		</div>
+		<div id="sidebar">
+			<div class="left">
+				<?php echo $this->element('sidebar'); ?>
+			</div>
 		</div>
 		<div id="content">
-
 			<?php echo $this->Flash->render(); ?>
-
 			<?php echo $this->fetch('content'); ?>
 		</div>
 		<div id="footer">
-			<?php echo $this->Html->link(
-					$this->Html->image('cake.power.gif', array('alt' => $cakeDescription, 'border' => '0')),
-					'https://cakephp.org/',
-					array('target' => '_blank', 'escape' => false, 'id' => 'cake-powered')
-				);
-			?>
-			<p>
-				<?php echo $cakeVersion; ?>
-			</p>
 		</div>
 	</div>
 	<?php echo $this->element('sql_dump'); ?>

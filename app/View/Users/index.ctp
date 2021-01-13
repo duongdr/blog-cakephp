@@ -2,13 +2,15 @@
 // so we use the paginator object the shorter way.
 // instead of using '$this->Paginator' everytime, we'll use '$paginator'
 $paginator = $this->Paginator;
+echo "<div class='col-md-6'>
+		<h5>BLOG POST</h5>
+	</div>" ;
 echo $this->Html->link(
-		'Add User',
-		array('controller' => 'users', 'action' => 'add'));
+		'Add User', ['action' => 'add'], ['class' => 'btn btn-primary']);
 if($users){
 
 	//creating our table
-	echo "<table>";
+	echo "<table class='table table-bordered table-striped'>";
 
 	// our table header, we can sort the data user the paginator sort() method!
 	echo "<tr>";

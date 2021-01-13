@@ -12,7 +12,12 @@ class UsersController extends AppController {
 	public function login() {
 		if ($this->request->is('post')) {
 			if ($this->Auth->login()) {
-				return $this->redirect($this->Auth->redirectUrl());
+//				return $this->redirect($this->Auth->redirectUrl());
+				return $this->redirect(
+					array(
+						'controller' => 'posts',
+						'action' => 'index'
+					));
 			}
 			$this->Flash->error(__('Invalid username or password, try again'));
 		}
@@ -31,6 +36,8 @@ class UsersController extends AppController {
 			$users = $this->paginate('User');
 //			$this->User->recursive = 0;
 			$this->set('users', $users);
+		} else {
+			$this->Flash->error(__('You can not access.'));
 		}
 
 	}
@@ -42,6 +49,8 @@ class UsersController extends AppController {
 				throw new NotFoundException(__('Invalid user'));
 			}
 			$this->set('user', $this->User->findById($id));
+		} else {
+			$this->Flash->error(__('You can not access.'));
 		}
 	}
 
@@ -57,8 +66,9 @@ class UsersController extends AppController {
 					__('The user could not be saved. Please, try again.')
 				);
 			}
+		} else {
+			$this->Flash->error(__('You can not access.'));
 		}
-
 	}
 
 	public function edit($id = null) {
@@ -79,26 +89,28 @@ class UsersController extends AppController {
 				$this->request->data = $this->User->findById($id);
 				unset($this->request->data['User']['password']);
 			}
+		} else {
+			$this->Flash->error(__('You can not access.'));
 		}
 
 	}
 
 	public function delete($id = null) {
-		// Prior to 2.5 use
-		// $this->request->onlyAllow('post');
-
-		$this->request->allowMethod('post');
-
-		$this->User->id = $id;
-		if (!$this->User->exists()) {
-			throw new NotFoundException(__('Invalid user'));
-		}
-		if ($this->User->delete()) {
-			$this->Flash->success(__('User deleted'));
+		if ($this->isAuthorized($this->Auth->user())) {
+			$this->request->allowMethod('post');
+			$this->User->id = $id;
+			if (!$this->User->exists()) {
+				throw new NotFoundException(__('Invalid user'));
+			}
+			if ($this->User->delete()) {
+				$this->Flash->success(__('User deleted'));
+				return $this->redirect(array('action' => 'index'));
+			}
+			$this->Flash->error(__('User was not deleted'));
 			return $this->redirect(array('action' => 'index'));
+		} else {
+			$this->Flash->error(__('You can not access.'));
 		}
-		$this->Flash->error(__('User was not deleted'));
-		return $this->redirect(array('action' => 'index'));
 	}
 
 }

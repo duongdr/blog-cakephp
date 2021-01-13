@@ -26,24 +26,36 @@ class PostsController extends AppController {
 	}
 
 	public function index() {
-		debug($this->Auth->user('role'));
-		$this->set('posts', $this->Post->find('all'));
+		if ($this->isAuthorized($this->Auth->user())) {
+			$this->paginate = array(
+				'limit' => 3,
+				'order' => array('id' => 'asc')
+			);
+			$posts = $this->paginate('Post');
+			$this->set('posts', $posts);
+		} else {
+			$this->Flash->error(__('You can not access.'));
+		}
 	}
 
 	public function view($id = null) {
-		if (!$id) {
-			throw new NotFoundException(__('Invalid post'));
-		}
+		if ($this->isAuthorized($this->Auth->user())) {
 
-		$post = $this->Post->findById($id);
-		if (!$post) {
-			throw new NotFoundException(__('Invalid post'));
+			if (!$id) {
+				throw new NotFoundException(__('Invalid post'));
+			}
+
+			$post = $this->Post->findById($id);
+			if (!$post) {
+				throw new NotFoundException(__('Invalid post'));
+			}
+			$this->set('post', $post);
+		} else {
+			$this->Flash->error(__('You can not access.'));
 		}
-		$this->set('post', $post);
 	}
 
 	public function add() {
-		debug($this->Auth->user('role'));
 		if ($this->isAuthorized($this->Auth->user())) {
 			if ($this->request->is('post')) {
 				$this->Post->create();
@@ -88,8 +100,6 @@ class PostsController extends AppController {
 	}
 
 	public function delete($id) {
-		$a = $this->Auth->user();
-		debug($a['role']);
 		if ($this->isAuthorized($this->Auth->user())) {
 			if ($this->request->is('get')) {
 				throw new MethodNotAllowedException();
@@ -104,7 +114,6 @@ class PostsController extends AppController {
 					__('The post with id: %s could not be deleted.', h($id))
 				);
 			}
-
 			return $this->redirect(array('action' => 'index'));
 		}  else {
 			$this->Flash->error(__('You can not access.'));
@@ -112,3 +121,4 @@ class PostsController extends AppController {
 	}
 
 }
+
