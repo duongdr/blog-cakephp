@@ -98,6 +98,8 @@ Configure::write('Dispatcher.filters', array(
 /**
  * Configures default file logging options
  */
+
+CakePlugin::load('AclExtras');
 App::uses('CakeLog', 'Log');
 CakeLog::config('debug', array(
 	'engine' => 'File',

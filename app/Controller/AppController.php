@@ -32,28 +32,37 @@ App::uses('Controller', 'Controller');
  */
 class AppController extends Controller {
 
+	public $helpers = array('Html', 'Form', 'Session');
+
 	public $components = array(
 		'Flash',
+		'Acl',
 		'Auth' => array(
-			'loginRedirect' => array(
-				'controller' => 'posts',
-				'action' => 'index'
-			),
-			'logoutRedirect' => array(
-				'controller' => 'pages',
-				'action' => 'display',
-				'home'
-			),
-			'authenticate' => array(
-				'Form' => array(
-					'passwordHasher' => 'Blowfish'
-				)
+			'authorize' => array(
+				'Actions' => array('actionPath' => 'controllers')
 			)
-		)
+		),
+		'Session'
 	);
 
 	public function beforeFilter() {
-		$this->Auth->allow('index', 'view');
+
+		$this->Auth->allow('display');
+		// cho phép user login
+		$this->Auth->loginAction = array(
+			'controller' => 'users',
+			'action' => 'login'
+		);
+		// khi user log out sẽ chuyển hướng đến trang login
+		$this->Auth->logoutRedirect = array(
+			'controller' => 'users',
+			'action' => 'login'
+		);
+		// khi user đã login thì chuyển hướng đến trang list post
+		$this->Auth->loginRedirect = array(
+			'controller' => 'posts',
+			'action' => 'index'
+		);
 	}
 
 	public function isAuthorized($user) {

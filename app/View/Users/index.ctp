@@ -1,79 +1,56 @@
-<?php
-// so we use the paginator object the shorter way.
-// instead of using '$this->Paginator' everytime, we'll use '$paginator'
-$paginator = $this->Paginator;
-echo "<div class='col-md-6'>
-		<h5>BLOG POST</h5>
-	</div>" ;
-echo $this->Html->link(
-		'Add User', ['action' => 'add'], ['class' => 'btn btn-primary']);
-if($users){
-
-	//creating our table
-	echo "<table class='table table-bordered table-striped'>";
-
-	// our table header, we can sort the data user the paginator sort() method!
-	echo "<tr>";
-
-	// in the sort method, ther first parameter is the same as the column name in our table
-	// the second parameter is the header label we want to display in the view
-	echo "<th>" . $paginator->sort('id', 'ID') . "</th>";
-	echo "<th>" . $paginator->sort('username', 'Username') . "</th>";
-	echo "<th>" . $paginator->sort('role', 'Role') . "</th>";
-	echo "<th>Action</th>";
-	echo "<th>Created</th>";
-	echo "</tr>";
-
-	// loop through the user's records
-	foreach( $users as $user ){
-		echo "<tr>";
-		echo "<td>{$user['User']['id']}</td>";
-		echo "<td>{$user['User']['username']}</td>";
-		echo "<td> {$user['User']['role'] }</td>";
-		echo "<td>{$this->Form->postLink(
-					'Delete',
-					array('action' => 'delete', $user['User']['id']),
-					array('confirm' => 'Are you sure?')
-				)} {$this->Html->link(
-					'Edit',
-					array('action' => 'edit', $user['User']['id'])
-				)} </td>";
-		echo "<td>{$user['User']['created']}</td>";
-		echo "</tr>";
-	}
-
-	echo "</table>";
-
-	// pagination section
-	echo "<div class='paging'>";
-
-	// the 'first' page button
-	echo $paginator->first("First");
-
-	// 'prev' page button,
-	// we can check using the paginator hasPrev() method if there's a previous page
-	// save with the 'next' page button
-	if($paginator->hasPrev()){
-		echo $paginator->prev("Prev");
-	}
-
-	// the 'number' page buttons
-	echo $paginator->numbers(array('modulus' => 2));
-
-	// for the 'next' button
-	if($paginator->hasNext()){
-		echo $paginator->next("Next");
-	}
-
-	// the 'last' page button
-	echo $paginator->last("Last");
-
-	echo "</div>";
-
-}
-
-// tell the user there's no records found
-else{
-	echo "No users found.";
-}
-
+<div class="users index">
+	<h2><?php echo __('Users'); ?></h2>
+	<table cellpadding="0" cellspacing="0">
+	<thead>
+	<tr>
+			<th><?php echo $this->Paginator->sort('id'); ?></th>
+			<th><?php echo $this->Paginator->sort('username'); ?></th>
+			<th><?php echo $this->Paginator->sort('group_id'); ?></th>
+			<th><?php echo $this->Paginator->sort('created'); ?></th>
+			<th><?php echo $this->Paginator->sort('modified'); ?></th>
+			<th class="actions"><?php echo __('Actions'); ?></th>
+	</tr>
+	</thead>
+	<tbody>
+	<?php foreach ($users as $user): ?>
+	<tr>
+		<td><?php echo h($user['User']['id']); ?>&nbsp;</td>
+		<td><?php echo h($user['User']['username']); ?>&nbsp;</td>
+		<td>
+			<?php echo $this->Html->link($user['Group']['name'], array('controller' => 'groups', 'action' => 'view', $user['Group']['id'])); ?>
+		</td>
+		<td><?php echo h($user['User']['created']); ?>&nbsp;</td>
+		<td><?php echo h($user['User']['modified']); ?>&nbsp;</td>
+		<td class="actions">
+			<?php echo $this->Html->link(__('View'), array('action' => 'view', $user['User']['id'])); ?>
+			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $user['User']['id'])); ?>
+			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $user['User']['id']), array('confirm' => __('Are you sure you want to delete # %s?', $user['User']['id']))); ?>
+		</td>
+	</tr>
+<?php endforeach; ?>
+	</tbody>
+	</table>
+	<p>
+	<?php
+	echo $this->Paginator->counter(array(
+		'format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
+	));
+	?>	</p>
+	<div class="paging">
+	<?php
+		echo $this->Paginator->prev('< ' . __('previous'), array(), null, array('class' => 'prev disabled'));
+		echo $this->Paginator->numbers(array('separator' => ''));
+		echo $this->Paginator->next(__('next') . ' >', array(), null, array('class' => 'next disabled'));
+	?>
+	</div>
+</div>
+<div class="actions">
+	<h3><?php echo __('Actions'); ?></h3>
+	<ul>
+		<li><?php echo $this->Html->link(__('New User'), array('action' => 'add')); ?></li>
+		<li><?php echo $this->Html->link(__('List Groups'), array('controller' => 'groups', 'action' => 'index')); ?> </li>
+		<li><?php echo $this->Html->link(__('New Group'), array('controller' => 'groups', 'action' => 'add')); ?> </li>
+		<li><?php echo $this->Html->link(__('List Posts'), array('controller' => 'posts', 'action' => 'index')); ?> </li>
+		<li><?php echo $this->Html->link(__('New Post'), array('controller' => 'posts', 'action' => 'add')); ?> </li>
+	</ul>
+</div>
